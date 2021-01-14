@@ -2,14 +2,11 @@
 //     Changes to this file may cause incorrect behavior and will be lost if
 //     the code is regenerated.
 
-	export interface JsonSummaryResult
-	{
+	export interface JsonSummaryResult {
 		summary: JsonCoverageSummary;
 		coverage: JsonCoverageCoverage;
 	}
-	type Nullable<T> = T | null
-	export interface JsonCoverageSummary
-	{
+	export interface JsonCoverageSummary {
 		generatedon: Date;
 		parser: string;
 		assemblies: number;
@@ -19,37 +16,40 @@
 		uncoveredlines: number;
 		coverablelines: number;
 		totallines: number;
-		linecoverage: Nullable<number>;
-		coveredbranches: Nullable<number>;
-		totalbranches: Nullable<number>;
-		branchcoverage: Nullable<number>;
+		/** Nullable */
+		linecoverage: number;
+		coveredbranches: number;
+		totalbranches: number;
+		/** Nullable */
+		branchcoverage: number;
 	}
-	export interface JsonCoverageCoverage
-	{
+	export interface JsonCoverageCoverage {
 		assemblies: JsonAssemblyCoverage[];
 	}
-	export interface JsonAssemblyCoverage
-	{
+	export interface JsonAssemblyCoverage {
 		name: string;
 		classes: number;
 		coveredlines: number;
 		coverablelines: number;
-		totallines: Nullable<number>;
-		coverage: Nullable<number>;
-		coveredbranches: Nullable<number>;
-		totalbranches: Nullable<number>;
-		branchcoverage: Nullable<number>;
+		totallines: number;
+		/** Nullable */
+		coverage: number;
+		coveredbranches: number;
+		totalbranches: number;
+		/** Nullable */
+		branchcoverage: number;
 		classesinassembly: JsonClassCoverage[];
 	}
-	export interface JsonClassCoverage
-	{
+	export interface JsonClassCoverage {
 		name: string;
 		coveredlines: number;
 		uncoveredlines: number;
 		coverablelines: number;
-		totallines: Nullable<number>;
-		coverage: Nullable<number>;
-		coveredbranches: Nullable<number>;
-		totalbranches: Nullable<number>;
-		branchcoverage: Nullable<number>;
+		totallines: number;
+		/** Nullable */
+		coverage: number;
+		coveredbranches: number;
+		totalbranches: number;
+		/** Nullable */
+		branchcoverage: number;
 	}
