@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +32,8 @@ namespace BrowserControl
         
         public MainWindow()
         {
-            var distFile = @"C:\Users\tonyh\Source\Repos\Json_Report_Generator_To_Html\Report\dist\index.html";
+            var solnDir = new DirectoryInfo(Assembly.GetExecutingAssembly().Location).Parent.Parent.Parent.Parent;
+            var distFile = System.IO.Path.Combine(solnDir.FullName, @"Report\dist\index.html");
             InitializeComponent();
             
             webBrowser.ObjectForScripting = new ScriptManager(this);
