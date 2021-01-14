@@ -1,0 +1,36 @@
+{
+  "name": "report",
+  "version": "0.0.0",
+  "description": "Report",
+  "main": "index.js",
+  "author": {
+    "name": ""
+  },
+  "scripts": {
+    "dev": "parcel ./src/index.html",
+    "build": "parcel build ./src/index.html --public-url ./",
+    "prebuild": "rimraf dist",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.14",
+    "@types/react-dom": "^17.0.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.2.2"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "@testing-library/jest-dom": "^5.11.8",
+    "@testing-library/react": "^11.2.3",
+    "@types/jest": "^26.0.20",
+    "@types/react": "^17.0.0",
+    "core-js": "^3.8.2",
+    "jest": "^26.6.3",
+    "parcel": "^1.12.4",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "ts-jest": "^26.4.4"
+  }
+}

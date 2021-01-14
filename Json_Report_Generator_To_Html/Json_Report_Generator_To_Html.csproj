@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Reinforced.Typings" Version="1.5.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FccJsonSummaryReportBuilder\FccJsonSummaryReportBuilder.csproj" />
+  </ItemGroup>
+
+</Project>
