@@ -121,7 +121,7 @@ namespace BrowserControl
             
         }
 
-        public void Initialize(ISettings settings)
+        public void Initialize(ProxySettings settings)
         {
             initialized = true;
             jsReportProxy.Initialize(settings);

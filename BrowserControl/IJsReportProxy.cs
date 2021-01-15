@@ -6,7 +6,7 @@ namespace BrowserControl
     {
         void ReportGenerationEnabled(bool enabled);
         void GenerateReport(JsonSummaryResult jsonSummaryResult);
-        void Initialize(ISettings initialSettings);
+        void Initialize(ProxySettings initialSettings);
         void RunningReport();
         
     }

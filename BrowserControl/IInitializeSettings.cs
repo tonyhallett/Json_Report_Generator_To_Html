@@ -2,7 +2,7 @@
 {
     public interface IInitializeSettings
     {
-        void Initialize(ISettings settings);
+        void Initialize(ProxySettings settings);
     }
 
     

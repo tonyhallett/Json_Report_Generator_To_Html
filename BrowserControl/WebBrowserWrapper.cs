@@ -25,7 +25,7 @@ namespace BrowserControl
             webBrowser.InvokeScript("generateReport", jsonSummaryResult);
         }
 
-        public void Initialize(ISettings settings)
+        public void Initialize(ProxySettings settings)
         {
             webBrowser.InvokeScript("initialize", settings);
         }

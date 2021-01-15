@@ -9,7 +9,7 @@
             InitializeCommand = new RelayCommand<object>(_ =>
             {
                 InitializeEnabled = false;
-                initializeSettings.Initialize(this);
+                initializeSettings.Initialize(new ProxySettings { reportGenerationEnabled = ReportGenerationEnabled});
             });
         }
         private bool reportGenerationEnabled = true;

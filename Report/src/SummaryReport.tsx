@@ -11,24 +11,23 @@ import { ToggleAutoReport } from './LinkBacks/ToggleAutoReport';
 import { JsonSummaryResult } from './jsonSummaryResult';
 import { GenerateReport } from './LinkBacks/GenerateReport';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { ArrowLeftRounded } from '@material-ui/icons';
 
-const jsonSummary = getJsonSummary();
 
 interface InitialSettings{
-    ReportGenerationEnabled:boolean
+    reportGenerationEnabled:boolean
 }
 
 interface SummaryReportState extends InitialSettings{
-    runningReport:boolean
+    runningReport:boolean,
+    jsonSummaryResult:JsonSummaryResult
 }
 export class SummaryReport extends React.Component<{},SummaryReportState> {
     constructor(props) {
         super(props);
         this.state={
-            ReportGenerationEnabled:true,
-
-            runningReport:false
+            reportGenerationEnabled:true,
+            runningReport:false,
+            jsonSummaryResult:null
         }
         this.addGlobalMethods();
     }
@@ -50,17 +49,26 @@ export class SummaryReport extends React.Component<{},SummaryReportState> {
     }
     
     render() {
+        //can show constants as well 
         if(this.state.runningReport){
             return <LinearProgress />
         }
+        const constants = <>
+            <FineCodeCoverageIcon/>
+                <BuyMeACoffee/><LogIssueOrSuggestion/><RateAndReview/>
+                <ToggleAutoReport enabled={this.state.reportGenerationEnabled}/>
+                <GenerateReport/>
+        </>
+        if(this.state.jsonSummaryResult === null){
+            return constants;
+        }
+        var jsonSummaryResult = this.state.jsonSummaryResult;
         var tabbables:Array<Tabbable> = [
-            {title:"Coverage",element:<CoverageTable assemblies={jsonSummary.coverage.assemblies}/>},
-            {title:"Summary",element:<SummaryTable summary={jsonSummary.summary} />},
+            {title:"Coverage",element:<CoverageTable assemblies={jsonSummaryResult.coverage.assemblies}/>},
+            {title:"Summary",element:<SummaryTable summary={jsonSummaryResult.summary} />},
             {title:"Risk Hotspots",element:"Risk hotspots"}];
         var output = <div>
-            <BuyMeACoffee/><LogIssueOrSuggestion/><RateAndReview/>
-            <ToggleAutoReport enabled={this.state.ReportGenerationEnabled}/>
-            <GenerateReport/>
+            {constants}
             <TabsControl tabsLabel="Report Tabs" tabbables={tabbables}/>
             
         </div>
@@ -69,25 +77,25 @@ export class SummaryReport extends React.Component<{},SummaryReportState> {
     }
     //C# callable - note the prefix
     //did not work https://stackoverflow.com/questions/7322420/calling-javascript-object-method-using-webbrowser-document-invokescript
-    //care - C# property style
     __initialize(settings:InitialSettings){
-        alert("in initialize");
-        alert(settings.ReportGenerationEnabled);
-        this.setState({
-            ReportGenerationEnabled:settings.ReportGenerationEnabled
-        });
+        this.setState(settings);
     }
     __runningReport(){
         this.setState({runningReport:true});
     }
     __generateReport(jsonSummaryResult:JsonSummaryResult){
-        //will set running report to false
+        alert("generate report !")
+        //this to be the new 
+        this.setState({runningReport:false,jsonSummaryResult:jsonSummaryResult});
     }
     __reportGenerationEnabled(enabled:boolean){
-        this.setState({ReportGenerationEnabled:enabled});
+        this.setState({reportGenerationEnabled:enabled});
     }
 }
 
-
+//todo images with parcel
+function FineCodeCoverageIcon(){
+    return <div>FCC</div>
+}
 
 
