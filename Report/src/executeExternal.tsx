@@ -3,7 +3,7 @@ export function safeExecuteExternal(executor:(external:any)=>void) {
         if(window.external){
             executor(window.external as any);
         }
-    } finally { }
+    } catch { }
 }
 
 export function logExternal(message:string){

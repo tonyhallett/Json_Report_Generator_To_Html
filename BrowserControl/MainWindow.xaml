@@ -7,11 +7,59 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="600" Width="*"/>
-            <ColumnDefinition Width="200"/>
-        </Grid.ColumnDefinitions>
-        <WebBrowser x:Name="webBrowser" Grid.Column="0"/>
-        <TextBlock x:Name="txtWindowExternal" Grid.Column="1"/>
+        <TabControl>
+            <!-- this has to be first so that settings initialize works ! -->
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock>Report</TextBlock>
+                </TabItem.Header>
+                <WebBrowser x:Name="webBrowser"/>
+            </TabItem>
+            <TabItem>
+                <TabItem.Resources>
+                    <DataTemplate DataType="{x:Type local:SettingsViewModel}" >
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0">Report generation enabed</Label>
+                            <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding ReportGenerationEnabled}"/>
+                            <Button IsEnabled="{Binding InitializeEnabled}" Grid.Row="1" Grid.Column="0" Command="{Binding InitializeCommand}">Initialize</Button>
+                        </Grid>
+                    </DataTemplate>
+                </TabItem.Resources>
+                <TabItem.Header>
+                    <TextBlock>Settings</TextBlock>
+                </TabItem.Header>
+                <ContentControl Content="{Binding Settings}"></ContentControl>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock>Projects</TextBlock>
+                </TabItem.Header>
+                <StackPanel>
+                    <Button Command="{Binding SelectProjectCommand}">Select .NET Core project dll</Button>
+                    <Button Command="{Binding ClearProjectsCommand}">Clear projects</Button>
+                    <CheckBox IsChecked="{Binding UseFakeData}" IsEnabled="{Binding UseFakeDataEnabled}" Content="Use fake data"/>
+                    <ItemsControl ItemsSource="{Binding TestProjects}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </TabItem>
+            
+        </TabControl>
+        
     </Grid>
 </Window>

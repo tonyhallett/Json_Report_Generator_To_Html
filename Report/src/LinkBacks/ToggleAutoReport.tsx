@@ -2,21 +2,18 @@ import React from 'react';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import Tooltip from '@material-ui/core/Tooltip';
 import ToggleButton from '@material-ui/lab/ToggleButton';
+import { logExternal, safeExecuteExternal } from '../executeExternal';
 
-export function ToggleReport() {
-  // will useState - will look for a global variable 
-  // still not sure how get vs -> if does then report and wait for the vs change ?
+export interface ToggleAutoReportProps{
+  enabled:boolean
+}
+export function ToggleAutoReport(props:ToggleAutoReportProps) {
   return   <Tooltip title="Toggle reporting">
       <ToggleButton
         value="yeah!"//todo what is this required for
-        selected
+        selected={props.enabled}
         onChange={() => {
-          console.log("Toggling")
-          const external = window.external as any;
-          if (external.toggleReportGeneration) {
-            external.toggleReportGeneration();
-          }
-          //setSelected(!selected);
+          safeExecuteExternal(external => external.ReportGenerationEnabled(!props.enabled))
         }}
       >
         <AssessmentIcon/>

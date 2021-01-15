@@ -11,6 +11,6 @@ import { SummaryReport } from './SummaryReport'
 
 
 ReactDOM.render(
-	<SummaryReport/>,
+	<SummaryReport ref={summaryReport => (window as any).summaryReport = summaryReport}/>,
   document.getElementById('root'),
 )

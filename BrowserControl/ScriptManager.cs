@@ -8,48 +8,64 @@ using System.Threading.Tasks;
 
 namespace BrowserControl
 {
-	[ComVisible(true)]
-	public class ScriptManager
-	{
+    [ComVisible(true)]
+    public class ScriptManager : IScriptManager
+    {
+        private IReportGenerator reportGenerator;
         private IWindowExternalCallbackWriter windowExternalCallbackWriter;
+        private ISettings settings;
 
-        public ScriptManager(IWindowExternalCallbackWriter windowExternalCallbackWriter)
+        public void Initialize(IWindowExternalCallbackWriter callbackWriter, ISettings settings,IReportGenerator reportGenerator)
         {
-            this.windowExternalCallbackWriter = windowExternalCallbackWriter;
-        }
-		public void Log(string message)
-        {
-			Debug.WriteLine(message);
-        }
-
-		//commented out in js currently
-		public void LogError(string message)
-        {
-			this.windowExternalCallbackWriter.Received($"Error - {message}");
+            this.reportGenerator = reportGenerator;
+            this.windowExternalCallbackWriter = callbackWriter;
+            this.settings = settings;
         }
 
+        public void ReportGenerationEnabled(bool enabled)
+        {
+            settings.ReportGenerationEnabled = enabled;
+        }
+        public void GenerateReport()
+        {
+            reportGenerator.Generate();
+        }
+        #region calls from js that just write
+        //commented out in js currently
+        public void LogError(string message)
+        {
+            this.windowExternalCallbackWriter.Received($"Error - {message}");
+        }
+        #region link backs that write
+        public void Log(string message)
+        {
+            Debug.WriteLine(message);
+        }
         public void OpenFile(string assemblyName, string qualifiedClassName)
-		{
-			this.windowExternalCallbackWriter.Received($"{assemblyName} {qualifiedClassName}");
-		}
+        {
+            this.windowExternalCallbackWriter.Received($"{assemblyName} {qualifiedClassName}");
+        }
 
-		public void BuyMeACoffee()
-		{
-			//System.Diagnostics.Process.Start("https://paypal.me/FortuneNgwenya");
-			this.windowExternalCallbackWriter.Received("Buy me a coffee");
-		}
+        public void BuyMeACoffee()
+        {
+            //System.Diagnostics.Process.Start("https://paypal.me/FortuneNgwenya");
+            this.windowExternalCallbackWriter.Received("Buy me a coffee");
+        }
 
-		public void LogIssueOrSuggestion()
-		{
-			//System.Diagnostics.Process.Start("https://github.com/FortuneN/FineCodeCoverage/issues");
-			this.windowExternalCallbackWriter.Received("github issues");
-		}
+        public void LogIssueOrSuggestion()
+        {
+            //System.Diagnostics.Process.Start("https://github.com/FortuneN/FineCodeCoverage/issues");
+            this.windowExternalCallbackWriter.Received("github issues");
+        }
 
-		public void RateAndReview()
-		{
-			this.windowExternalCallbackWriter.Received("rate");
-			//System.Diagnostics.Process.Start("https://marketplace.visualstudio.com/items?itemName=FortuneNgwenya.FineCodeCoverage&ssr=false#review-details");
-		}
-	}
+        public void RateAndReview()
+        {
+            this.windowExternalCallbackWriter.Received("rate");
+            //System.Diagnostics.Process.Start("https://marketplace.visualstudio.com/items?itemName=FortuneNgwenya.FineCodeCoverage&ssr=false#review-details");
+        }
+        #endregion
+        #endregion
+        
+    }
 
 }

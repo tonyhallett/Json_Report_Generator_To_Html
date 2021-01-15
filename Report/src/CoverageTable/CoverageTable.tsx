@@ -32,7 +32,6 @@ export class CoverageTable extends React.Component<CoverageTableProps,CoverageTa
     initialSortDirectionAscending = true;
     classFilterSimple = true;
 
-    firstRender:boolean = true
     groupSorter:GroupSorter<JsonClassCoverageWithAssembly>;
     propertyRowCellCreatorsLookup: Map<keyof JsonClassCoverageWithAssembly,PropertyRowCellCreator> = new Map();
     constructor(props:CoverageTableProps){
@@ -45,11 +44,13 @@ export class CoverageTable extends React.Component<CoverageTableProps,CoverageTa
         
         this.initializePropertyRowCellCreators();
         this.state = {
-            groupedObjects:undefined,
+            groupedObjects:null,
             grouping:GroupingLevel.Assembly,
             columns:this.initializeColumns(),
             filter:""
-        }
+        };
+
+        (this.state as any).groupedObjects = this.getFirstGrouping();
     }
     filterString = "";
     private groupFilter:GroupFilter<JsonClassCoverageWithAssembly> = (group => {
@@ -269,14 +270,8 @@ export class CoverageTable extends React.Component<CoverageTableProps,CoverageTa
     }
 
     render() {
-        let groupedObjects:GroupedObject<JsonClassCoverageWithAssembly>[] = [];
-        if(this.firstRender){
-            groupedObjects = this.getFirstGrouping();
-            this.firstRender = false;
-        }else{
-            groupedObjects = this.state.groupedObjects;
-        }
-        
+        //think the assumption was would never render due to a props change
+        // will be on state because of operation that has not occurred
         return <div>
                 <Grid container alignItems="center">
                     <Grid item>
@@ -291,7 +286,7 @@ export class CoverageTable extends React.Component<CoverageTableProps,CoverageTa
                 </Grid>
                 
                 
-                <CoverageTableView propertyRowCellCreators={this.propertyRowCellCreatorsLookup} groupingLevel={this.state.grouping} columns={this.state.columns} sort={this.sort} groupedObjects={groupedObjects} toggleGroupExpansion={this.toggleGroupExpansion}/>
+                <CoverageTableView propertyRowCellCreators={this.propertyRowCellCreatorsLookup} groupingLevel={this.state.grouping} columns={this.state.columns} sort={this.sort} groupedObjects={this.state.groupedObjects} toggleGroupExpansion={this.toggleGroupExpansion}/>
 
             </div>
     }
