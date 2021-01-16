@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BrowserControl"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="FCC Emulator" Height="450" Width="800">
     <Grid>
         <TabControl>
             <!-- this has to be first so that settings initialize works ! -->
