@@ -2,6 +2,6 @@
 {
     public interface IReportGenerator
     {
-        void Generate();
+        void Generate(TestProject[] testProjects);
     }
 }

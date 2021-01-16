@@ -80,9 +80,7 @@
     <Compile Include="IWebBrowser.cs" />
     <Compile Include="IWindowExternalCallbackWriter.cs" />
     <Compile Include="JsonSummaryResult.cs" />
-    <Compile Include="JsonSummaryResultDeserializer.cs" />
     <Compile Include="MainViewModel.cs" />
-    <Compile Include="ProxySettings.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="Reporter.cs" />
     <Compile Include="ScriptManager.cs" />

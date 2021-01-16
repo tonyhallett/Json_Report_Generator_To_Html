@@ -10,14 +10,17 @@ export function getLineCoverageDisplay(jsonCoverageSummary:JsonCoverageSummary){
 
 export function SummaryTable(props: { summary: JsonCoverageSummary; }) {
     var summary = props.summary;
-    return <LeftTable keyValues={[
-        ["Assemblies", summary.assemblies.toString()],
-        ["Classes", summary.classes.toString()],
-        ["Files", summary.files.toString()],
-        ["Covered lines", summary.coveredlines.toString()],
-        ["Uncovered lines", summary.uncoveredlines.toString()],
-        ["Coverable lines", summary.coverablelines.toString()],
-        ["Total lines", summary.totallines.toString()],
-        ["Line coverage", getLineCoverageDisplay(summary)]
-    ]} />;
+    if(summary){
+      return <LeftTable keyValues={[
+          ["Assemblies", summary.assemblies.toString()],
+          ["Classes", summary.classes.toString()],
+          ["Files", summary.files.toString()],
+          ["Covered lines", summary.coveredlines.toString()],
+          ["Uncovered lines", summary.uncoveredlines.toString()],
+          ["Coverable lines", summary.coverablelines.toString()],
+          ["Total lines", summary.totallines.toString()],
+          ["Line coverage", getLineCoverageDisplay(summary)]
+      ]} />;
+    }
+    return null;
 }

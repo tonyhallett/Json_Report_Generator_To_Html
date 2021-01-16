@@ -1,7 +1,9 @@
 ﻿using BrowserControl.Deserialization;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,11 +11,15 @@ using ToastNotifications.Messages;
 
 namespace BrowserControl
 {
+    public static class FakeNames
+    {
+        public static string Fake1 => "___Fake1";
+        public static string Fake2 => "___Fake2";
+    }
 
     public class MainViewModel : ViewModelBase, IWindowExternalCallbackWriter, IReportGenerator, IInitializeSettings
     {
         private bool initialized;
-        private readonly IWebBrowser webBrowser;
         private readonly IGenerator generator;
         private readonly IToaster toaster;
         private readonly IJsReportProxy jsReportProxy;
@@ -21,25 +27,20 @@ namespace BrowserControl
         public RelayCommand<object> ClearProjectsCommand { get; set; }
         
         public SettingsViewModel Settings { get; set; }
-        private bool useFakeData = true;
-        private bool useFakeDataEnabled;
-        public bool UseFakeData
-        {
-            get => useFakeData;
-            set => SetProperty(ref useFakeData, value);
-        }
-        public bool UseFakeDataEnabled
-        {
-            get => useFakeDataEnabled;
-            set => SetProperty(ref useFakeDataEnabled, value);
-        }
         private void AddTestProject(TestProject testProject)
         {
             this.TestProjects.Add(testProject);
-            UseFakeDataEnabled = true;
-            UseFakeData = false;
+            if (initialized)
+            {
+                jsReportProxy.ProjectsAdded(new TestProject[] { testProject }, false);
+            }
         }
-        public ObservableCollection<TestProject> TestProjects { get; } = new ObservableCollection<TestProject>();
+        public ObservableCollection<TestProject> TestProjects { get; } = new ObservableCollection<TestProject>
+        {
+            new TestProject{ name=FakeNames.Fake1,path="Some/FakePath/Fake1.dll", Fake = true},
+            new TestProject{ name=FakeNames.Fake2,path="Some/FakePath/Fake2.dll", Fake = true}
+        };
+
         public MainViewModel(
             IWebBrowser webBrowser,
             IJsReportProxy jsReportProxy,
@@ -50,10 +51,9 @@ namespace BrowserControl
         )
         {
             Settings = new SettingsViewModel(jsReportProxy, this);
-            scriptManager.Initialize(this,Settings, this);
+            scriptManager.Initialize(this,Settings, this,jsReportProxy);
             webBrowser.ObjectForScripting = scriptManager;
             webBrowser.Navigate(htmlProvider.GetPath());
-            this.webBrowser = webBrowser;
             this.generator = generator;
             this.toaster = toaster;
             this.jsReportProxy = jsReportProxy;
@@ -65,14 +65,14 @@ namespace BrowserControl
                 {
                     var dll = openFileDialog.FileName;
                     var name = System.IO.Path.GetFileNameWithoutExtension(dll);
-                    this.AddTestProject(new TestProject { Name = name, DllPath = dll });
+                    this.AddTestProject(new TestProject { name = name, path = dll });
                 }
             });
             ClearProjectsCommand = new RelayCommand<object>(_ =>
             {
                 TestProjects.Clear();
-                UseFakeDataEnabled = false;
-                UseFakeData = true;
+                //going to mimic a new solution here
+                jsReportProxy.ProjectsAdded(new TestProject[] { }, true);
             });
         }
 
@@ -82,52 +82,86 @@ namespace BrowserControl
             toaster.ShowInformation(message);
         }
 
-        public void GenerateReportFromFakeData()
+        public void ReceivedError(string message)
         {
-            webBrowser.RunningReport();
+            toaster.ShowError(message);
+        }
+
+        public void GenerateReportFromFakeData(string[] testProjectNames)
+        {
+            jsReportProxy.RunningReport();
 
             Task.Delay(generator.FakeGenerationTime).ContinueWith((_) =>
             {
                 App.Current.Dispatcher.Invoke(() =>
                  {
-                     webBrowser.GenerateReport(generator.GenerateFakeData());
+                     jsReportProxy.GenerateReport(generator.GenerateFakeData(testProjectNames));
                  });
             });
 
         }
 
-        public void GenerateReport()
+        public void GenerateReport(TestProject[] testProjects)
         {
-            webBrowser.RunningReport();
-            // let the generator deal with ensuring output folder
-            generator.Generate(TestProjects.Select(p => p.DllPath).ToList());//todo async
-
+            jsReportProxy.RunningReport();
+            Task.Run(() =>
+            {
+                var generatedReportJson = generator.Generate(testProjects.Select(p => p.path).ToList());
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    jsReportProxy.GenerateReport(generatedReportJson);
+                });
+            });
         }
 
-        public void Generate()
+        public void Generate(TestProject[] testProjects)
         {
-            if (!this.initialized)
+            if (!initialized)
             {
                 toaster.ShowWarning("Initialize settings first");
             }
             else
             {
-                if (this.TestProjects.Count == 0 || UseFakeData)
+                var fakeProjects = testProjects.Where(p => p.Fake).ToArray();
+                var numberOfFakes = fakeProjects.Length;
+                if (numberOfFakes == testProjects.Length)
                 {
-                    this.GenerateReportFromFakeData();
+                    GenerateReportFromFakeData(fakeProjects.Select(p=>p.name).ToArray());
                 }
                 else
                 {
-                    GenerateReport();
+                    if(numberOfFakes == 0)
+                    {
+                        toaster.ShowInformation("Excluded fake projects");
+                    }
+                    GenerateReport(testProjects.Except(fakeProjects).ToArray());
                 }
             }
             
         }
-
-        public void Initialize(ProxySettings settings)
+        
+        public void Initialize(JsonSettings jsonSettings)
         {
             initialized = true;
-            jsReportProxy.Initialize(settings);
+            jsReportProxy.Initialize(new InitializationSettings(jsonSettings,TestProjects.ToArray()).ToJson());
+        }
+    }
+
+    class InitializationSettings : JsonSettings
+    {
+        public InitializationSettings(JsonSettings jsonSettings,TestProject[] projects)
+        {
+            reportGenerationEnabled = jsonSettings.reportGenerationEnabled;
+            showExpandCollapseAll = jsonSettings.showExpandCollapseAll;
+            showFilter = jsonSettings.showFilter;
+            showGroupSlider = jsonSettings.showGroupSlider;
+            showTooltips = jsonSettings.showTooltips;
+            this.projects = projects;
+        }
+        public TestProject[] projects { get; }
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

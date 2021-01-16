@@ -18,12 +18,17 @@ import { GroupValueSummer } from './GroupSorter/GroupValueSummer';
 
 interface CoverageTableProps{
     assemblies:JsonAssemblyCoverage[];
+    showExpandCollapseAll:boolean,
+    showFilter:boolean,
+    showTooltips:boolean,
+    showGroupSlider:boolean
 }
 interface CoverageTableState{
     groupedObjects:GroupedObject<JsonClassCoverageWithAssembly>[],
     grouping:GroupingLevel,
     columns:JsonClassCoverageColumn[],
-    filter:string
+    filter:string,
+    
 }
 
 export const NoNamespace = "__No Namespace";
@@ -274,15 +279,24 @@ export class CoverageTable extends React.Component<CoverageTableProps,CoverageTa
         // will be on state because of operation that has not occurred
         return <div>
                 <Grid container alignItems="center">
-                    <Grid item>
-                        <GroupSlider currentGrouping={this.state.grouping} groupingChanged={this.groupingChanged}/> 
-                    </Grid>
-                    <Grid item>
-                        <ExpandCollapse header="Expand / collapse all" expandOrCollapse={this.expandOrCollapseAll}/>
-                    </Grid>
-                    <Grid item>
-                        <TextField variant="outlined" label="Filter" value={this.state.filter} onChange={this.filter}/>
-                    </Grid>
+                    {
+                        this.props.showGroupSlider &&
+                        <Grid item>
+                            <GroupSlider currentGrouping={this.state.grouping} groupingChanged={this.groupingChanged}/> 
+                        </Grid>
+                    }
+                    {
+                        this.props.showExpandCollapseAll &&
+                        <Grid item>
+                            <ExpandCollapse header="Expand / collapse all" expandOrCollapse={this.expandOrCollapseAll}/>
+                        </Grid>
+                    }
+                    {
+                        this.props.showFilter &&
+                        <Grid item>
+                            <TextField variant="outlined" label="Filter" value={this.state.filter} onChange={this.filter}/>
+                        </Grid>
+                    }
                 </Grid>
                 
                 

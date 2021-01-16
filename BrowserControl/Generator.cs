@@ -1,6 +1,8 @@
 ﻿using BrowserControl.Deserialization;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,44 +25,19 @@ namespace BrowserControl
 
         public int FakeGenerationTime => fakeGenerationTime;
 
-        public JsonSummaryResult Generate(List<string> dlls)
+        public string Generate(List<string> dlls)
         {
             var coberturaFiles = coverletGlobal.RunCobertura(dlls, outputDirectory);
             var jsonPath = reporter.GenerateJsonReport(coberturaFiles, outputDirectory);
-            return JsonSummaryResultDeserializer.DeserializeFromFile(jsonPath);
+            return File.ReadAllText(jsonPath);
         }
 
-        public JsonSummaryResult GenerateFakeData()
+        public string GenerateFakeData(string[] fakeNames)
         {
-            return new JsonSummaryResult
+            var fake1 = new JsonAssemblyCoverage
             {
-                summary = new JsonCoverageSummary
-                {
-                    assemblies = 2,
-                    classes = 10,
-
-                    branchcoverage = (decimal)0.5,
-                    coveredbranches = 5,
-                    totalbranches = 10,
-
-                    coveredlines = 2,
-                    coverablelines = 20,
-                    uncoveredlines = 18,
-                    linecoverage = (decimal)0.1,
-                    totallines = 30,
-
-                    files = 3,
-                    parser = "Cobertura",
-                    generatedon = new DateTime()
-                },
-                coverage = new JsonCoverageCoverage
-                {
-                    assemblies = new JsonAssemblyCoverage[]
-                    {
-                        new JsonAssemblyCoverage
-                        {
-                            name = "Assembly1",
-                            classesinassembly = new JsonClassCoverage[] {
+                name = FakeNames.Fake1,
+                classesinassembly = new JsonClassCoverage[] {
                                 new JsonClassCoverage {
                                     name = "Ns.Class1",
                                     branchcoverage = 0,
@@ -108,27 +85,27 @@ namespace BrowserControl
                                     uncoveredlines = 0
                                 }
                             },
-                            branchcoverage = 0,
-                            classes = 2,
-                            coverablelines = 0,
-                            coveredlines = 0,
-                            totallines = 0,
-                            coverage = 0,
-                            coveredbranches = 0,
-                            totalbranches = 0
-                        },
-                        new JsonAssemblyCoverage
-                        {
-                            name= "Assembly2",
-                            branchcoverage = 0,
-                            classes = 2,
-                            coverablelines = 0,
-                            coveredlines = 0,
-                            totallines = 0,
-                            coverage = 0,
-                            coveredbranches = 0,
-                            totalbranches = 0,
-                            classesinassembly = new JsonClassCoverage[]
+                branchcoverage = 0,
+                classes = 2,
+                coverablelines = 0,
+                coveredlines = 0,
+                totallines = 0,
+                coverage = 0,
+                coveredbranches = 0,
+                totalbranches = 0
+            };
+            var fake2 = new JsonAssemblyCoverage
+            {
+                name = FakeNames.Fake2,
+                branchcoverage = 0,
+                classes = 2,
+                coverablelines = 0,
+                coveredlines = 0,
+                totallines = 0,
+                coverage = 0,
+                coveredbranches = 0,
+                totalbranches = 0,
+                classesinassembly = new JsonClassCoverage[]
                             {
                                 new JsonClassCoverage
                                 {
@@ -191,11 +168,50 @@ namespace BrowserControl
                                     uncoveredlines= 0
                                 }
                             }
-                        }
+            };
 
+            var jsonSummaryResult = new JsonSummaryResult
+            {
+                summary = new JsonCoverageSummary
+                {
+                    assemblies = fakeNames.Length,
+                    classes = 10,
+
+                    branchcoverage = (decimal)0.5,
+                    coveredbranches = 5,
+                    totalbranches = 10,
+
+                    coveredlines = 2,
+                    coverablelines = 20,
+                    uncoveredlines = 18,
+                    linecoverage = (decimal)0.1,
+                    totallines = 30,
+
+                    files = 3,
+                    parser = "Cobertura",
+                    generatedon = new DateTime()
+                },
+                coverage = new JsonCoverageCoverage
+                {
+                    assemblies = new List<JsonAssemblyCoverage>
+                    {
+                        
+                        
                     }
                 }
             };
+            
+            if (fakeNames.Contains(FakeNames.Fake1))
+            {
+                jsonSummaryResult.coverage.assemblies.Add(fake1);
+            }
+
+            if (fakeNames.Contains(FakeNames.Fake2))
+            {
+                jsonSummaryResult.coverage.assemblies.Add(fake2);
+            }
+
+            return JsonConvert.SerializeObject(jsonSummaryResult);
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public interface IInitializeSettings
     {
-        void Initialize(ProxySettings settings);
+        void Initialize(JsonSettings jsonSettings);
     }
 
     

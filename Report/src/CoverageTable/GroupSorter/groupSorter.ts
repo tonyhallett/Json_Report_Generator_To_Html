@@ -47,10 +47,10 @@ export class GroupSorter<T>{
     return this.ownProperties;
   }
   private doGrouping(groupSelector: GroupSelector<T>){
+    this.rootGroup.groupFilter = this.groupFilter;
     this.toGroup.forEach(obj => {
       const propertyNames = this.getPropertyNames(obj);
       const groupHierarchy = groupSelector(obj);
-      this.rootGroup.groupFilter = this.groupFilter;
       this.rootGroup.addToGroup(groupHierarchy, obj,this.identifier,this.idProp,this.summer,propertyNames,this.groupFilter);
     })
     

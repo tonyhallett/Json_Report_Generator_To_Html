@@ -5,6 +5,7 @@ import Box from '@material-ui/core/Box'
 export interface Tabbable{
     title:string
     element:any//todo
+    disabled?:boolean
 }
 
 export function TabPanel(props) {
@@ -45,7 +46,7 @@ export function TabsControl(props: { tabbables: Array<Tabbable>; tabsLabel: stri
 
         <Tabs value={selectedTabIndex} onChange={(evt, newIndex) => setSelectedTabIndex(newIndex)} aria-label={props.tabsLabel}>
             {props.tabbables.map((tabbable, index) => {
-                return <Tab key={index} label={tabbable.title} {...a11yProps(index)} />;
+                return <Tab disabled={tabbable.disabled} key={index} label={tabbable.title} {...a11yProps(index)} />;
             })}
         </Tabs>
 

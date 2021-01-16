@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,32 +15,52 @@ namespace BrowserControl
         private IReportGenerator reportGenerator;
         private IWindowExternalCallbackWriter windowExternalCallbackWriter;
         private ISettings settings;
+        private IJsReportProxy jsReportProxy;
 
-        public void Initialize(IWindowExternalCallbackWriter callbackWriter, ISettings settings,IReportGenerator reportGenerator)
+        public void Initialize(IWindowExternalCallbackWriter callbackWriter, ISettings settings,IReportGenerator reportGenerator,IJsReportProxy jsReportProxy)
         {
             this.reportGenerator = reportGenerator;
             this.windowExternalCallbackWriter = callbackWriter;
             this.settings = settings;
+            this.jsReportProxy = jsReportProxy;
         }
+
+        #region mimic vs
+        public void ChangeShowExpandCollapseAll(bool expandCollapseAll)
+        {
+            jsReportProxy.ChangeShowExpandCollapseAll(expandCollapseAll);
+        }
+
+        public void ChangeShowFilter(bool showFilter)
+        {
+            jsReportProxy.ChangeShowFilter(showFilter);
+        }
+
+        public void ChangeShowTooltips(bool showTooltips)
+        {
+            jsReportProxy.ChangeShowTooltips(showTooltips);
+        }
+        #endregion
 
         public void ReportGenerationEnabled(bool enabled)
         {
             settings.ReportGenerationEnabled = enabled;
         }
-        public void GenerateReport()
+        public void GenerateReport(string projectsJson)
         {
-            reportGenerator.Generate();
+            var projects = JsonConvert.DeserializeObject<TestProject[]>(projectsJson);
+            reportGenerator.Generate(projects);
         }
         #region calls from js that just write
         //commented out in js currently
         public void LogError(string message)
         {
-            this.windowExternalCallbackWriter.Received($"Error - {message}");
+            this.windowExternalCallbackWriter.ReceivedError(message);
         }
         #region link backs that write
         public void Log(string message)
         {
-            Debug.WriteLine(message);
+            this.windowExternalCallbackWriter.Received(message);
         }
         public void OpenFile(string assemblyName, string qualifiedClassName)
         {

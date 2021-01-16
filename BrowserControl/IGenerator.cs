@@ -5,8 +5,8 @@ namespace BrowserControl
 {
     public interface IGenerator
     {
-        JsonSummaryResult Generate(List<string> dlls);
-        JsonSummaryResult GenerateFakeData();
+        string Generate(List<string> dlls);
+        string GenerateFakeData(string[] testProjectNames);
 
         int FakeGenerationTime { get; }
     }

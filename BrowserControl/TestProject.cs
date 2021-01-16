@@ -2,8 +2,9 @@
 {
     public class TestProject
     {
-        public string Name { get; set; }
-        public string DllPath { get; set; }
+        public string name { get; set; }
+        public string path { get; set; }
+        public bool Fake { get; set; }
     }
 
     

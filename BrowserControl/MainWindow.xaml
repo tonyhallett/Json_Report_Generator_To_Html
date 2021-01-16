@@ -27,7 +27,7 @@
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
-                            <Label Grid.Row="0" Grid.Column="0">Report generation enabed</Label>
+                            <Label Grid.Row="0" Grid.Column="0">Auto report generation enabled</Label>
                             <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding ReportGenerationEnabled}"/>
                             <Button IsEnabled="{Binding InitializeEnabled}" Grid.Row="1" Grid.Column="0" Command="{Binding InitializeCommand}">Initialize</Button>
                         </Grid>
@@ -45,15 +45,13 @@
                 <StackPanel>
                     <Button Command="{Binding SelectProjectCommand}">Select .NET Core project dll</Button>
                     <Button Command="{Binding ClearProjectsCommand}">Clear projects</Button>
-                    <CheckBox IsChecked="{Binding UseFakeData}" IsEnabled="{Binding UseFakeDataEnabled}" Content="Use fake data"/>
                     <ItemsControl ItemsSource="{Binding TestProjects}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <TextBlock Text="{Binding Name}"></TextBlock>
+                                    <TextBlock Text="{Binding path}"></TextBlock>
                                 </StackPanel>
                             </DataTemplate>
-                            
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
