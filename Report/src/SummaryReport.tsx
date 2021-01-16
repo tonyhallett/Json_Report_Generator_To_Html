@@ -11,6 +11,7 @@ import { ToggleAutoReport } from './LinkBacks/ToggleAutoReport';
 import { JsonSummaryResult } from './jsonSummaryResult';
 import { GenerateReport } from './LinkBacks/GenerateReport';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { FineCodeCoverageIcon } from './FineCodeCoverageIcon';
 
 
 interface InitialSettings{
@@ -91,11 +92,6 @@ export class SummaryReport extends React.Component<{},SummaryReportState> {
     __reportGenerationEnabled(enabled:boolean){
         this.setState({reportGenerationEnabled:enabled});
     }
-}
-
-//todo images with parcel
-function FineCodeCoverageIcon(){
-    return <div>FCC</div>
 }
 
 

@@ -85,12 +85,15 @@ namespace BrowserControl
         public void GenerateReportFromFakeData()
         {
             webBrowser.RunningReport();
+
             Task.Delay(generator.FakeGenerationTime).ContinueWith((_) =>
             {
-                webBrowser.GenerateReport(generator.GenerateFakeData());
+                App.Current.Dispatcher.Invoke(() =>
+                 {
+                     webBrowser.GenerateReport(generator.GenerateFakeData());
+                 });
             });
-            
-            
+
         }
 
         public void GenerateReport()

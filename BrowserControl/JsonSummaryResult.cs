@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Security.Permissions;
 using System.Text;
+using System.Xml.Linq;
 
 namespace BrowserControl.Deserialization
 {
@@ -15,6 +17,7 @@ namespace BrowserControl.Deserialization
         public JsonCoverageSummary summary;
         public JsonCoverageCoverage coverage;
     }
+
     [System.Runtime.InteropServices.ComVisible(true)]
     public class JsonCoverageSummary
     {
@@ -33,11 +36,14 @@ namespace BrowserControl.Deserialization
         public int totalbranches;
         public decimal? branchcoverage;
     }
+
     [System.Runtime.InteropServices.ComVisible(true)]
     public class JsonCoverageCoverage
     {
-        public List<JsonAssemblyCoverage> assemblies;
+        public JsonAssemblyCoverage[] assemblies;
     }
+
+    [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     [System.Runtime.InteropServices.ComVisible(true)]
     public class JsonAssemblyCoverage
     {
@@ -51,8 +57,9 @@ namespace BrowserControl.Deserialization
         public int coveredbranches;
         public int totalbranches;
         public decimal? branchcoverage;
-        public List<JsonClassCoverage> classesinassembly;
+        public JsonClassCoverage[] classesinassembly;
     }
+
     [System.Runtime.InteropServices.ComVisible(true)]
     public class JsonClassCoverage
     {

@@ -55,12 +55,12 @@ namespace BrowserControl
                 },
                 coverage = new JsonCoverageCoverage
                 {
-                    assemblies = new List<JsonAssemblyCoverage>
+                    assemblies = new JsonAssemblyCoverage[]
                     {
                         new JsonAssemblyCoverage
                         {
                             name = "Assembly1",
-                            classesinassembly = new List<JsonClassCoverage> {
+                            classesinassembly = new JsonClassCoverage[] {
                                 new JsonClassCoverage {
                                     name = "Ns.Class1",
                                     branchcoverage = 0,
@@ -128,7 +128,7 @@ namespace BrowserControl
                             coverage = 0,
                             coveredbranches = 0,
                             totalbranches = 0,
-                            classesinassembly = new List<JsonClassCoverage>
+                            classesinassembly = new JsonClassCoverage[]
                             {
                                 new JsonClassCoverage
                                 {
