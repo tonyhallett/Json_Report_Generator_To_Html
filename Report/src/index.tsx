@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Root } from './Root'
 
 import { SummaryReport } from './SummaryReport'
 
@@ -11,6 +12,6 @@ import { SummaryReport } from './SummaryReport'
 
 
 ReactDOM.render(
-	<SummaryReport ref={summaryReport => (window as any).summaryReport = summaryReport}/>,
+	<Root/>,
   document.getElementById('root'),
 )

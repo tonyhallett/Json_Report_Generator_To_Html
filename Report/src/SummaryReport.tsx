@@ -99,7 +99,6 @@ export class SummaryReport extends React.Component<{},SummaryReportState> {
         return enabled;
     }
     render() {
-        logExternal("show tooltips: " + this.state.showTooltips);
         //can show constants as well 
         if(this.state.runningReport){
             return <LinearProgress />
